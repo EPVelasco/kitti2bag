@@ -1,16 +1,20 @@
-FROM ros:lunar-ros-base
+FROM ros:melodic-ros-base
 
 RUN apt-get update \
   && DEBIAN_FRONTEND=noninteractive apt-get -y install \
-    ros-lunar-cv-bridge \
-    ros-lunar-opencv3 \
-    ros-lunar-tf \
+    ros-melodic-cv-bridge \
     python-pip python-matplotlib \
   && rm -rf /var/lib/apt/lists/*
 COPY . /kitti2bag
-RUN pip install -e /kitti2bag
+
+RUN apt-get -y install ros-melodic-cv-bridge
+RUN apt-get update \
+	&& DEBIAN_FRONTEND=noninteractive apt-get -y install \
+	ros-melodic-tf*\
+	ros-melodic-tf2*
+
+RUN pip install kitti2bag
+RUN pip install pykitti
+RUN pip install numpy
 
 WORKDIR /data
-
-ENTRYPOINT ["/kitti2bag/docker_entrypoint.sh"]
-
